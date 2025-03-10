@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/WebSearch.iml" filepath="$PROJECT_DIR$/.idea/modules/WebSearch.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/WebSearch.WebSearch-build.iml" filepath="$PROJECT_DIR$/.idea/modules/WebSearch.WebSearch-build.iml" />
     </modules>
   </component>
 </project>
