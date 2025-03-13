@@ -1,4 +1,4 @@
-import scala.collection.parallel.CollectionConverters.*
+//import scala.collection.parallel.CollectionConverters.*
 import scala.math.log
 
 object PageSearch {
