@@ -9,7 +9,7 @@ object PageSearch {
      */
     def count(pages: List[RankedWebPage], query: List[String]): List[Double] = {
         for page <- pages yield {
-            (for term <- query yield page.text.sliding(term.length).count(_ == term)).sum.toDouble
+            (for term <- query yield page.text.toLowerCase.sliding(term.length).count(_ == term.toLowerCase)).sum.toDouble
         }
     }
 
