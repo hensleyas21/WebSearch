@@ -19,8 +19,8 @@ object PageSearch {
      * @return      a list of the term-frequency of the occurrences of those terms in each page in the same order given
      */
     def tf(pages: List[RankedWebPage], query: List[String]): List[Double] = {
-        val counts: List[Double] = count(pages, query)
-        for (page, countVal) <- pages zip counts yield countVal / page.text.length
+        val countVals: List[Double] = count(pages, query)
+        for (page, countVal) <- pages zip countVals yield countVal / page.text.length
     }
 
     /**
@@ -29,6 +29,13 @@ object PageSearch {
      * @return      a list of the TF-IDF score for each page in the same order given
      */
     def tfidf(pages: List[RankedWebPage], query: List[String]): List[Double] = {
-        List() // TODO: implement this method and remove this stub
+        for page <- pages yield {
+            val tfidfList = for term <- query yield {
+                val tfVal = tf(pages, List(term)).head
+                val numContains = pages.count(_.text.toLowerCase.contains(term))
+                tfVal * log(pages.length / (numContains+1.0))
+            }
+            tfidfList.sum
+        }
     }
 }
