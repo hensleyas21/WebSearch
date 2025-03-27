@@ -1,4 +1,4 @@
-//import scala.collection.parallel.CollectionConverters.*
+import scala.collection.parallel.CollectionConverters.*
 import scala.math.log
 
 object PageSearch {
@@ -30,12 +30,12 @@ object PageSearch {
      */
     def tfidf(pages: List[RankedWebPage], query: List[String]): List[Double] = {
         for page <- pages yield {
-            val tfidfList = for term <- query yield {
-                val tfVal = tf(pages, List(term)).head
-                val numContains = pages.count(_.text.toLowerCase.contains(term))
-                tfVal * log(pages.length / (numContains+1.0))
-            }
-            tfidfList.sum
+            query.par.map(term => {
+                val numPagesContains = pages.count(_.text.toLowerCase.contains(term))
+                val tfVal = tf(List(page), List(term)).head
+                val idfVal = log(pages.length / (1.0 + numPagesContains))
+                tfVal * idfVal
+            }).sum
         }
     }
 }
