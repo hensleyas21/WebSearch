@@ -29,13 +29,13 @@ object PageSearch {
      * @return      a list of the TF-IDF score for each page in the same order given
      */
     def tfidf(pages: List[RankedWebPage], query: List[String]): List[Double] = {
-        for page <- pages yield {
-            query.par.map(term => {
+        pages.par.map((page) => {
+            query.map(term => {
                 val numPagesContains = pages.count(_.text.toLowerCase.contains(term))
                 val tfVal = tf(List(page), List(term)).head
                 val idfVal = log(pages.length / (1.0 + numPagesContains))
                 tfVal * idfVal
             }).sum
-        }
+        }).toList
     }
 }
