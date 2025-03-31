@@ -25,8 +25,11 @@ object PageRank {
         val n = pages.size
         val numSteps = 100
 
-        val startPage = Random.shuffle(pages).head
+        val pagesList = pages.values.toList
 
+        val startPages = List.fill(s)(pagesList(Random.nextInt(n)))
+
+        val endPages = startPages.map(runPick(_, pages, numSteps))
 
 
         Map()
@@ -34,14 +37,15 @@ object PageRank {
     }
 
     @tailrec
-    private def runPick(webPage: WebPage, pages: Map[String, WebPage], numSteps: Int): WebPage = {
-        if numSteps <= 0 then webPage else {
-            val nextPage: WebPage = if webPage.links.nonEmpty && Random().nextDouble() < .85 then {
-                pages.getOrElse(webPage.links(Random().nextInt(webPage.links.size)), webPage)
+    private def runPick(webPageId: String, pages: Map[String, WebPage], numSteps: Int): String = {
+        val webPage = pages(webPageId)
+        if numSteps <= 0 then webPageId else {
+            val nextPageId: String = if webPage.links.nonEmpty && Random.nextDouble() < .85 then {
+                webPage.links(Random().nextInt(webPage.links.size))
             } else {
-                Random.shuffle(pages).head._2
+                Random.shuffle(pages).head._1
             }
-            runPick(nextPage, pages, numSteps - 1)
+            runPick(nextPageId, pages, numSteps - 1)
         }
     }
 }
