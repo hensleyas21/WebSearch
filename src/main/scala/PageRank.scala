@@ -40,7 +40,7 @@ object PageRank {
             val nextPageId: String = if webPage.links.nonEmpty && Random.nextDouble() < .85 then {
                 webPage.links(Random().nextInt(webPage.links.size))
             } else {
-                Random.shuffle(pages).head._1
+                pages.keys.toList(Random.nextInt(pages.keys.size))
             }
             runPick(nextPageId, pages, numSteps - 1)
         }
