@@ -1,4 +1,4 @@
-//import scala.collection.parallel.CollectionConverters.*
+import scala.collection.parallel.CollectionConverters.*
 import scala.annotation.tailrec
 import scala.util.Random
 
@@ -19,21 +19,18 @@ object PageRank {
         pages.map((key,value) => key -> (for page <- pages yield if page._2.links.contains(key) then 1 else 0).sum.toDouble)
     }
 
-
+    /**
+     * @param pages A map of page.id to page for some number of WebPage objects
+     * @return A map of page.id to a weight that is calculated by simulating walkers
+     */
     def pagerank(pages: Map[String, WebPage]): Map[String, Double] = {
         val s = 10000
         val n = pages.size
         val numSteps = 100
 
-        val pagesList = pages.values.toList
+        val pageIdList = pages.keys.toList
 
-        val startPages = List.fill(s)(pagesList(Random.nextInt(n)))
-
-        val endPages = startPages.map(runPick(_, pages, numSteps))
-
-
-        Map()
-
+        List.fill(s)(pageIdList(Random.nextInt(n))).view.par.map(runPick(_, pages, numSteps)).groupBy(identity).map{case (id, list) => id -> (list.size+1.0)/(s+n)}.seq.toMap
     }
 
     @tailrec
