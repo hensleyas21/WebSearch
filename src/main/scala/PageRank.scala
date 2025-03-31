@@ -1,4 +1,5 @@
 //import scala.collection.parallel.CollectionConverters.*
+import scala.annotation.tailrec
 import scala.util.Random
 
 object PageRank {
@@ -22,6 +23,7 @@ object PageRank {
     def pagerank(pages: Map[String, WebPage]): Map[String, Double] = {
         val s = 10000
         val n = pages.size
+        val numSteps = 100
 
         val startPage = Random.shuffle(pages).head
 
@@ -31,13 +33,15 @@ object PageRank {
 
     }
 
-    def runPick(webPage: WebPage, pages: Map[String, WebPage]): WebPage ={
-        val options = webPage.links.size
-        val choice = Random().nextDouble()
-        if choice >= 0.85 then {
-            pages.getOrElse(webPage.links(Random().nextInt(options)),webPage)
-        } else{
-            Random.shuffle(pages).head._2
+    @tailrec
+    private def runPick(webPage: WebPage, pages: Map[String, WebPage], numSteps: Int): WebPage = {
+        if numSteps <= 0 then webPage else {
+            val nextPage: WebPage = if webPage.links.nonEmpty && Random().nextDouble() < .85 then {
+                pages.getOrElse(webPage.links(Random().nextInt(webPage.links.size)), webPage)
+            } else {
+                Random.shuffle(pages).head._2
+            }
+            runPick(nextPage, pages, numSteps - 1)
         }
     }
 }
